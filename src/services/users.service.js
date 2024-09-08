@@ -1,9 +1,12 @@
 import UserRepository from '../repositories/userRepository.js';
-import CartRepository from '../repositories/cartRepository.js';
+import CartRepository from '../repositories/cartRepository.js'; 
 import UserDTO from '../dto/user.dto.js';
 import { isValidPassword, createHash } from '../util/util.js';
 
 class UserService {
+    constructor() {
+        this.cartRepository = new CartRepository();  
+    }
     async createUser(userData) {
         const userDTO = new UserDTO(
             userData.firstName,
@@ -56,13 +59,12 @@ class UserService {
         if (existingUser) {
             throw new Error('El usuario ya existe');
         }
-        
-        const newCart = await CartRepository.createCart();       
-        userData.cart = newCart._id;
 
-        console.log(userData);
-        console.log(newCart);
+        const { cartDTO, _id } = await this.cartRepository.createCart();  // Obtén el DTO y el _id
+        userData.cart = _id; 
+    
         userData.password = createHash(userData.password);
+        console.log(userData);
 
         return await UserRepository.createUser(userData);
     }
