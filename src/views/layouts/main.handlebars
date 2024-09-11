@@ -19,9 +19,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+                {{#ifEquals role "user"}}
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/">Tienda</a>
                 </li>
+                {{/ifEquals}}
                 {{#ifEquals role "admin"}}
                 <li class="nav-item">
                     <a class="nav-link" href="/realtimeproducts">Productos en tiempo real</a>

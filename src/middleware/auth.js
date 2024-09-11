@@ -7,8 +7,8 @@ const extractUserFromToken = (req, res, next) => {
         try {
             const decoded = jwt.verify(token, "extremelydifficulttorevealsecret");
             res.locals.username = decoded.username;
-            res.locals.email = decoded.email;
             res.locals.role = decoded.role;
+            res.locals.cart = decoded.cart;
         } catch (error) {
             console.error("Error al decodificar el token:", error);
         }
@@ -23,17 +23,22 @@ export function onlyAdmin(req, res, next) {
     } else {
         res.status(403).render("onlyAdmin", {
             layout: false,
-            message: "Acceso, denegado. Esta área es solo para administradores."
+            message: "Acceso denegado. Esta área es solo para administradores."
         });
-        // res.status(403).send("Acceso, denegado. Esta área es solo para administradores");
     }
 }
 
 export function onlyUser(req, res, next) {
     if (req.user && req.user.role === "user") {
         next();
-    } else {
-        res.status(403).send("Acceso denegado. Esta área es solo para usuarios");
+    } else if(req.user && req.user.role === "admin") {
+        res.status(403).render("onlyUser", {
+            layout: false,
+            message: "Acceso denegado. Esta área es solo para usuarios."
+        });
+    }
+    else {
+        res.render("login");
     }
 }
 

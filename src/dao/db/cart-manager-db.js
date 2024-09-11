@@ -20,6 +20,7 @@ class CartManager {
         }
     }
 
+
     async addProductToCart(cid, pid) {
         try {
             const cart = await Cart.findById(cid);
@@ -99,4 +100,4 @@ class CartManager {
     }
 }
 
-export default CartManager;
+export default new CartManager;

@@ -62,7 +62,7 @@ class ProductManager {
                 console.error("El código del producto ya existe");
                 throw new Error("El código del producto ya existe");
             }
-
+    
             const updatedProduct = await Product.findByIdAndUpdate(
                 id,
                 updatedFields,
@@ -96,4 +96,4 @@ class ProductManager {
     }
 }
 
-export default ProductManager;
+export default new ProductManager;

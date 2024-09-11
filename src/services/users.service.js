@@ -1,12 +1,11 @@
 import UserRepository from '../repositories/userRepository.js';
-import CartRepository from '../repositories/cartRepository.js'; 
+import CartRepository from '../repositories/cartRepository.js';
 import UserDTO from '../dto/user.dto.js';
 import { isValidPassword, createHash } from '../util/util.js';
+import Cart from '../dao/models/cart.model.js';
 
 class UserService {
-    constructor() {
-        this.cartRepository = new CartRepository();  
-    }
+
     async createUser(userData) {
         const userDTO = new UserDTO(
             userData.firstName,
@@ -15,14 +14,11 @@ class UserService {
             userData.age,
             userData.username,
             userData.role,
-
         );
-
         const userToSave = {
             ...userDTO,
             password: createHash(userData.password)
         };
-
         return await UserRepository.createUser(userToSave);
     }
 
@@ -60,20 +56,17 @@ class UserService {
             throw new Error('El usuario ya existe');
         }
 
-        const { cartDTO, _id } = await this.cartRepository.createCart();  // Obtén el DTO y el _id
-        userData.cart = _id; 
-    
+        const { cartDTO, _id } = await CartRepository.createCart();
+        userData.cart = _id;
+
         userData.password = createHash(userData.password);
-        console.log(userData);
 
         return await UserRepository.createUser(userData);
     }
 
     async loginUser(usernameOrEmail, password) {
-
         let user;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         if (emailRegex.test(usernameOrEmail)) {
             user = await UserRepository.getUserByEmail(usernameOrEmail);
         } else {
@@ -83,8 +76,10 @@ class UserService {
         if (!user || !isValidPassword(password, user)) {
             throw new Error("Credenciales incorrectas");
         }
-
         return user;
+    }
+    async getCartByUserId(userId) {
+        return await UserRepository.getCartByUserId(userId);
     }
 }
 

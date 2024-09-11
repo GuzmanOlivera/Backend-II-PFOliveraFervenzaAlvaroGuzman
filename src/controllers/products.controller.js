@@ -1,14 +1,11 @@
 import ProductService from '../services/products.service.js';
 
 class ProductController {
-    constructor() {
-        this.productService = new ProductService();
-    }
 
     async getProducts(req, res) {
         const { limit = 10, page = 1, sort, category, availability } = req.query;
         try {
-            const products = await this.productService.getProducts({ limit, page, sort, category, availability });
+            const products = await ProductService.getProducts({ limit, page, sort, category, availability });
             res.json({
                 status: 'success',
                 payload: products.docs,
@@ -29,7 +26,7 @@ class ProductController {
 
     async getProductById(req, res) {
         try {
-            const product = await this.productService.getProductById(req.params.pid);
+            const product = await ProductService.getProductById(req.params.pid);
             if (!product) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
@@ -43,7 +40,7 @@ class ProductController {
     async addProduct(req, res) {
         try {
             const productData = req.body;
-            const newProduct = await this.productService.addProduct(productData);
+            const newProduct = await ProductService.addProduct(productData);
             res.status(201).json(newProduct);
         } catch (error) {
             console.error("Error al agregar producto:", error);
@@ -53,7 +50,7 @@ class ProductController {
 
     async updateProduct(req, res) {
         try {
-            const updatedProduct = await this.productService.updateProduct(req.params.pid, req.body);
+            const updatedProduct = await ProductService.updateProduct(req.params.pid, req.body);
             if (!updatedProduct) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
@@ -66,7 +63,7 @@ class ProductController {
 
     async deleteProduct(req, res) {
         try {
-            const deletedProduct = await this.productService.deleteProduct(req.params.pid);
+            const deletedProduct = await ProductService.deleteProduct(req.params.pid);
             if (!deletedProduct) {
                 return res.status(404).json({ error: 'Producto no encontrado' });
             }
@@ -78,4 +75,4 @@ class ProductController {
     }
 }
 
-export default ProductController;
+export default new ProductController;

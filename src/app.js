@@ -26,8 +26,6 @@ const PORT = 8080;
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-const productManager = new ProductManager();
-
 app.use(cookieParser());
 app.use(passport.initialize());
 initializePassport();
@@ -73,23 +71,23 @@ io.on("connection", async (socket) => {
     let currentPage = 1;
     const limit = 10;
 
-    const products = await productManager.getProducts({ limit, page: currentPage });
+    const products = await ProductManager.getProducts({ limit, page: currentPage });
     socket.emit('products', products.docs, products.totalPages, currentPage);
 
     socket.on('requestProductsPage', async (page) => {
-        const products = await productManager.getProducts({ limit, page });
+        const products = await ProductManager.getProducts({ limit, page });
         socket.emit('paginatedProducts', products.docs, products.totalPages, page);
     });
 
     socket.on('addProduct', async (productData) => {
-        await productManager.addProduct(productData);
-        const updatedProducts = await productManager.getProducts({ limit, page: currentPage });
+        await ProductManager.addProduct(productData);
+        const updatedProducts = await ProductManager.getProducts({ limit, page: currentPage });
         io.emit('products', updatedProducts.docs, updatedProducts.totalPages, currentPage);
     });
 
     socket.on('deleteProduct', async (productId) => {
-        await productManager.deleteProduct(productId);
-        const updatedProducts = await productManager.getProducts({ limit, page: currentPage });
+        await ProductManager.deleteProduct(productId);
+        const updatedProducts = await ProductManager.getProducts({ limit, page: currentPage });
         io.emit('products', updatedProducts.docs, updatedProducts.totalPages, currentPage);
     });
 

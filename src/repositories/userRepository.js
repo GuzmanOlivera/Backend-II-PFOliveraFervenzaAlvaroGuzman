@@ -17,8 +17,20 @@ class UserRepository {
     }
     async getUserByEmail(email) {
         return await UserManager.findOne({ email });
-
     }
+
+    async getUserByCartId(cartId) {
+        try {
+            return await UserManager.findOne({ cart: cartId });
+        } catch (error) {
+            console.error("Error al obtener usuario por ID de carrito:", error);
+            throw new Error("Error al obtener usuario por ID de carrito");
+        }
+    }
+    async getCartByUserId(id) {
+        return await UserManager.getCartByUserId(id);
+    }
+
     async updateUser(id, userDTO) {
         return await UserManager.updateUser(id, userDTO);
     }

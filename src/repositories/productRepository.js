@@ -2,12 +2,10 @@ import ProductManager from '../dao/db/product-manager-db.js';
 import ProductDTO from '../dto/product.dto.js';
 
 class ProductRepository {
-    constructor() {
-        this.productManager = new ProductManager();
-    }
+
 
     async getProducts(queryParams) {
-        const productsData = await this.productManager.getProducts(queryParams);
+        const productsData = await ProductManager.getProducts(queryParams);
         return productsData.docs.map(product => new ProductDTO(
             product.title,
             product.description,
@@ -21,7 +19,7 @@ class ProductRepository {
     }
 
     async getProductById(id) {
-        const product = await this.productManager.getProductById(id);
+        const product = await ProductManager.getProductById(id);
         return product ? new ProductDTO(
             product.title,
             product.description,
@@ -45,16 +43,16 @@ class ProductRepository {
             productData.category,
             productData.thumbnails
         );
-        return await this.productManager.addProduct(productDTO);
+        return await ProductManager.addProduct(productDTO);
     }
 
     async updateProduct(id, updatedFields) {
-        return await this.productManager.updateProduct(id, updatedFields);
+        return await ProductManager.updateProduct(id, updatedFields);
     }
 
     async deleteProduct(id) {
-        return await this.productManager.deleteProduct(id);
+        return await ProductManager.deleteProduct(id);
     }
 }
 
-export default ProductRepository;
+export default new ProductRepository;

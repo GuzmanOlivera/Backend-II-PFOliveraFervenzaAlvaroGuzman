@@ -3,23 +3,16 @@ import ProductManager from "../dao/db/product-manager-db.js";
 import CartManager from "../dao/db/cart-manager-db.js";
 import extractUserFromToken, { onlyAdmin, onlyUser } from "../middleware/auth.js";
 import passport from "passport";
+import userRepository from "../repositories/userRepository.js";
 
 const router = Router();
-const productManager = new ProductManager();
-const cartManager = new CartManager();
-
 router.use(extractUserFromToken);
 
-router.get("/", async (req, res) => {
-    try {
-
-        if (!res.locals.role) {
-            return res.render("login");
-        }
-
+router.get("/", passport.authenticate("jwt", { session: false, failureRedirect: "/login" }), onlyUser, async (req, res) => {
+    try {    
         const { limit = 10, page = 1, sort, query } = req.query;
 
-        const products = await productManager.getProducts({
+        const products = await ProductManager.getProducts({
             limit: parseInt(limit),
             page: parseInt(page),
             sort,
@@ -30,9 +23,13 @@ router.get("/", async (req, res) => {
             return product._doc;
         });
 
+        const user = await userRepository.getUserByUsername(res.locals.username);
+        const cart = await userRepository.getCartByUserId(user._id);
+
         res.render(
             'home',
             {
+                cart: cart._id,
                 products: arrayProducts,
                 totalPages: products.totalPages,
                 prevPage: products.prevPage || 1,
@@ -56,7 +53,7 @@ router.get("/", async (req, res) => {
 
 router.get("/products/:pid", async (req, res) => {
     try {
-        const product = await productManager.getProductById(req.params.pid);
+        const product = await ProductManager.getProductById(req.params.pid);
         if (!product) {
             return res.status(404).render("404", { message: "Producto no encontrado" });
         }
@@ -67,11 +64,11 @@ router.get("/products/:pid", async (req, res) => {
     }
 });
 
-router.get('/realtimeproducts', passport.authenticate("jwt", {session: false}) , onlyAdmin , async (req, res) => {
+router.get('/realtimeproducts', passport.authenticate("jwt", { session: false }), onlyAdmin, async (req, res) => {
     const { limit = 10, page = 1, sort, query } = req.query;
 
     try {
-        const products = await productManager.getProducts({
+        const products = await ProductManager.getProducts({
             limit: parseInt(limit),
             page: parseInt(page),
             sort,
@@ -108,7 +105,7 @@ router.get('/realtimeproducts', passport.authenticate("jwt", {session: false}) ,
 
 router.get("/carts/:cid", async (req, res) => {
     try {
-        const cart = await cartManager.getCartById(req.params.cid);
+        const cart = await CartManager.getCartById(req.params.cid);
         if (!cart) {
             return res.status(404).render("404", { message: "Carrito no encontrado" });
         }

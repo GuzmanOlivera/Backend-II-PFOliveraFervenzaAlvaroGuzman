@@ -5,9 +5,9 @@ import jwt from 'jsonwebtoken';
 class UsersController {
     async createUser(req, res) {
         try {
-            const { first_name, last_name, email, age, username, password, role } = req.body;
+            const { first_name, last_name, email, age, username, role } = req.body;
 
-            const userDTO = new UserDTO(first_name, last_name, email, age, username, password, role);
+            const userDTO = new UserDTO(first_name, last_name, email, age, username, role);
 
             const newUser = await UserService.createUser(userDTO);
             res.status(201).json(newUser);
@@ -56,13 +56,23 @@ class UsersController {
         }
     }
 
+    async getCartByUserId(req, res) {
+        try {
+            const cart = await UserService.getCartByUserId(req.params.id);
+            if (!cart) return res.status(404).json({ error: 'Carrito no encontrado' });
+            res.json(cart);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
     async register(req, res) {
         try {
 
             const { username, firstName, lastName, email, age, password, role } = req.body;
 
             if (!firstName || !lastName) {
-                return res.status(400).send("firstName y lastName son requeridos");
+                return res.status(400).send("Los campos first_name y last_name son requeridos");
             }
 
             const userDTO = new UserDTO(firstName, lastName, email, age, username, role);
@@ -82,8 +92,6 @@ class UsersController {
             res.status(500).send("Error interno del servidor");
         }
     }
-
-
 
     async login(req, res) {
 
@@ -110,15 +118,14 @@ class UsersController {
 
     async current(req, res) {
         if (req.user) {
-            res.redirect("/");
-            /* const user = req.user;
-             const userDTO = new UserDTO(user);
-             res.render("home", { user: userDTO })*/
+            if (req.user.role === 'admin') {
+                res.redirect('/realtimeproducts');
+            } else {
+                res.redirect('/');
+            }
         } else {
-            res.send("No autorizado");
+            res.redirect('/');
         }
-
-
     }
     logout(req, res) {
         res.clearCookie("coderCookieToken");

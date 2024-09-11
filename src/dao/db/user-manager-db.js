@@ -30,8 +30,20 @@ class UserManager {
         }
     }
 
-    async findOne(query){
-        return await User.findOne(query); 
+    async getCartByUserId(id) {
+        try {
+            const user = await User.findById(id).populate('cart');
+            if (!user) {
+                throw new Error("Usuario no encontrado");
+            }
+            return user.cart;
+        } catch (error) {
+            console.error("Error al obtener el carrito del usuario:", error);
+            throw new Error("Error al obtener el carrito del usuario");
+        }
+    }
+    async findOne(query) {
+        return await User.findOne(query);
     }
 
     async updateUser(id, userDTO) {

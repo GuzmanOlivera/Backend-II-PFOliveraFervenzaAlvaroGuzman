@@ -7,12 +7,10 @@ const ticketSchema = new mongoose.Schema({
             const timestamp = Date.now().toString(36).toUpperCase().slice(0, 4);
             const randomChars = Math.random().toString(36).substring(2, 7).toUpperCase();
             return `${prefix}${timestamp}${randomChars}`;
-            //return `TICKET-${Math.random() * 1000}`;
         }
     },
     purchase_datetime: { type: Date, default: Date.now, required: true },
     amount: { type: Number, required: true },
-    price: Number, //FIXME: its necessary?
     purchaser: { type: String, required: true },
 });
 
