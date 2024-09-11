@@ -1,6 +1,6 @@
 # SurtidoCompleto
 
-This project is a web application for managing products and shopping carts, utilizing Node.js, Express, MongoDB with mongoose and mongoose-paginate-v2 for efficient database operations, Socket.IO for real-time communication, Handlebars for templating, passport for authentication, bcrypt for password encryption, JWT for secure token-based authentication and dotenv for environment variable management.
+This project is a web application for managing products and shopping carts, utilizing Node.js, Express, MongoDB with mongoose and mongoose-paginate-v2 for efficient database operations, Socket.IO for real-time communication, Handlebars for templating, passport for authentication, bcrypt for password encryption, JWT for secure token-based authentication and dotenv for environment variable management. It also generates a ticket with the purchased products and manages stock availability.
 
 ## Overview
 
@@ -20,13 +20,13 @@ User-friendly interface with Handlebars templates and Bootstrap styling.
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/GuzmanOlivera/PreEntrega1OliveraFervenzaAlvaroGuzman.git
+   git clone https://github.com/GuzmanOlivera/PFOliveraFervenzaAlvaroGuzman.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd PreEntrega1OliveraFervenzaAlvaroGuzman
+   cd PFOliveraFervenzaAlvaroGuzman
    ```
 
 3. Install the dependencies:
@@ -50,6 +50,7 @@ User-friendly interface with Handlebars templates and Bootstrap styling.
 - `POST /api/carts/:cid/products/:pid`: Add a product to the cart.
 - `PUT /api/carts/:cid/products/:pid`: Update a product in the cart. You can optionally specify the desired product quantity in the request body.
 - `DELETE /api/carts/:cid/products/:pid`: Remove a product from the cart.
+-  `GET /api/carts/:cid/purchase`: Generate a ticket with the purchased products.
 
 ## Products
 
