@@ -15,6 +15,10 @@ class CartService {
         const cart = await CartRepository.getCartById(cid);
         return new CartDTO(cart.products);
     }
+    async getFullCartById(cid) {
+        const cart = await CartRepository.getFullCartById(cid);
+        return cart;
+    }
 
     async addProductToCart(cid, pid) {
         try {

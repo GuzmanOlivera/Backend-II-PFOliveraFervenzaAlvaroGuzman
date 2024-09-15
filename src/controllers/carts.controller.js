@@ -24,6 +24,19 @@ class CartController {
         }
     }    
 
+    async getFullCartById(req, res) {
+        try {
+            const cart = await CartService.getFullCartById(req.params.cid);
+            if (!cart) {
+                return res.status(404).json({ error: 'Carrito no encontrado' });
+            }
+            res.json(cart);
+        } catch (error) {
+            console.error("Error al obtener carrito por ID:", error);
+            res.status(500).json({ error: error.message });
+        }
+    }    
+
     async addProductToCart(req, res) {
         try {
             const updatedCart = await CartService.addProductToCart(req.params.cid, req.params.pid);

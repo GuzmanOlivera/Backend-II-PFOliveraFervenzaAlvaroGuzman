@@ -1,7 +1,8 @@
 import { Router } from "express";
-const router = Router();
 import passport from "passport";
 import UsersController from '../controllers/users.controller.js';
+
+const router = Router();
 
 router.post('/register',UsersController.register);
 router.post('/login',UsersController.login);
